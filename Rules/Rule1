@@ -1,0 +1,2 @@
+ON ENERGY#Current>1 DO Backlog Timer1 {"Enable": 0 }; publish state/%topic%/kettle 1 ENDON
+ON ENERGY#Current<1 DO publish state/%topic%/kettle 0 ENDON

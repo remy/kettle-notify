@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "mqtt": "^5.0.3",
+    "renvy": "^4.0.2",
+    "telegraf": "^4.12.2"
+  }
+}
