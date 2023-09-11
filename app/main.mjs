@@ -56,7 +56,9 @@ client.on('message', (topic, message) => {
     console.log(`[mqtt] discovered device: ${data.t} / ${data.fn[0]}`);
     // collect for mapping
     devices.set(data.t, data.fn[0]);
-    bot.telegram.sendMessage(channelId, `Discovered "${data.fn[0]}" device`);
+
+    // we don't need the discovery message, but we do need to know if it's online or not (above)
+    // bot.telegram.sendMessage(channelId, `Discovered "${data.fn[0]}" device`);
   }
 
   if (topic.startsWith('state/')) {
