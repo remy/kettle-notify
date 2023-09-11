@@ -39,7 +39,7 @@ client.on('connect', async () => {
 
 client.on('message', (topic, message) => {
   if (topic.startsWith('tele/') && topic.endsWith('/LWT')) {
-    const data = JSON.parse(message.toString());
+    const data = message.toString();
     const [, device] = topic.split('/');
     const name = devices.get(device);
 
