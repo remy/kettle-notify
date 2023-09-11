@@ -86,13 +86,6 @@ bot.command('quit', async (ctx) => {
   await ctx.leaveChat();
 });
 
-bot.on(message('text'), async (ctx) => {
-  // Explicit usage
-  console.log(ctx);
-  // Using context shortcut
-  await ctx.reply(`Hello ${ctx.update.message.chat.first_name}`);
-});
-
 bot.launch();
 
 // Enable graceful stop
