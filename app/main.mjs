@@ -27,11 +27,14 @@ client.on('connect', async () => {
   });
 
   ['state/+/kettle', 'tasmota/discovery/#', 'tele/+/LWT'].forEach((topic) => {
-    client.subscribe(topic, (err) =>
-      err
-        ? console.log(`[mqtt] failed to connect to ${topic}`, err)
-        : console.log(`[mqtt] connected to ${topic}`)
-    );
+    client.subscribe(topic, (err) => {
+      if (err) {
+        console.log(`[mqtt] failed to connect to ${topic}`, err);
+        bot.telegram.sendMessage(channelId, '🛑 [mqtt] failed to subscribe');
+      } else {
+        console.log(`[mqtt] connected to ${topic}`);
+      }
+    });
   });
 
   bot.telegram.sendMessage(channelId, 'Bot has connected to mqtt');
@@ -44,9 +47,9 @@ client.on('message', (topic, message) => {
     const name = devices.get(device);
 
     if (data === 'Online') {
-      bot.telegram.sendMessage(channelId, `"${name}" is online`);
+      bot.telegram.sendMessage(channelId, `${name} is online`);
     } else {
-      bot.telegram.sendMessage(channelId, `"🛑 ${name}" is offline`);
+      bot.telegram.sendMessage(channelId, `🛑 ${name} is offline 🛑`);
     }
   }
 
