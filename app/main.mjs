@@ -26,7 +26,7 @@ client.on('connect', async () => {
     retain: true,
   });
 
-  ['state/+/kettle', 'tasmota/discovery/#'].forEach((topic) => {
+  ['state/+/kettle', 'tasmota/discovery/#', 'tele/+/LWT'].forEach((topic) => {
     client.subscribe(topic, (err) =>
       err
         ? console.log(`[mqtt] failed to connect to ${topic}`, err)
@@ -38,6 +38,18 @@ client.on('connect', async () => {
 });
 
 client.on('message', (topic, message) => {
+  if (topic.startsWith('tele/') && topic.endsWith('/LWT')) {
+    const data = JSON.parse(message.toString());
+    const [, device] = topic.split('/');
+    const name = devices.get(device);
+
+    if (data === 'Online') {
+      bot.telegram.sendMessage(channelId, `"${name}" is online`);
+    } else {
+      bot.telegram.sendMessage(channelId, `"🛑 ${name}" is offline`);
+    }
+  }
+
   if (topic.startsWith('tasmota/discovery/') && topic.endsWith('/config')) {
     // message is Buffer
     const data = JSON.parse(message.toString());
