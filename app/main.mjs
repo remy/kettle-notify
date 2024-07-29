@@ -83,9 +83,14 @@ client.on('message', (topic, message) => {
     }
 
     const value = parseInt(message.toString(), 10);
-    console.log({ topic, message, device, mode, value });
+    console.log(new Date().toJSON(), {
+      topic,
+      message: message.toString(),
+      device,
+      mode,
+      value,
+    });
     if (value === 1) {
-      console.log('sending');
       bot.telegram.sendMessage(channelId, `${name} is boiling the kettle`);
     }
     if (value === 2) {

@@ -1,3 +1,2 @@
-ON Clock#Timer=1 DO publish state/%topic%/kettle -1 ENDON
-ON Clock#Timer=2 DO Backlog Timer1 {"Enable": 1 }; publish state/%topic%/kettle 0 ENDON
-ON System#Boot DO publish state/%topic%/connected %time% ENDON
+ON clock#Timer=1 DO publish state/%topic%/kettle 2 ENDON
+ON clock#Timer=2 DO Backlog Timer1 {"Enable": 1 }; publish state/%topic%/kettle 0 ENDON
