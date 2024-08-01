@@ -7,6 +7,23 @@ const channelId = process.env.BOT_CHANNEL_ID;
 const botTopic = 'state/bot';
 const devices = new Map();
 
+const offlineNotifications = new Map();
+
+// every minute check if the offlineNotifications has any entries
+// if it does, then check if the value of the entry is older than 5 minutes
+// if it is, then send a message to the channel
+setInterval(() => {
+  const now = new Date();
+  offlineNotifications.forEach(([name, date]) => {
+    const diff = now - date;
+    if (diff > 300000) {
+      bot.telegram.sendMessage(channelId, `🛑 ${name} is offline 🛑`);
+      // and remove the entry
+      offlineNotifications.delete(name);
+    }
+  });
+}, 60000);
+
 let client = mqtt.connect(`mqtt://${process.env.MQTT_HOST}`, {
   username: process.env.MQTT_USER,
   password: process.env.MQTT_PASS,
@@ -47,10 +64,19 @@ client.on('message', (topic, message) => {
     const name = devices.get(device);
 
     if (data === 'Online') {
+      // check if the name is in the `offlineNotifications` array
+      // if it is, then remove it and return.
+      // if it's not, then send the online message
+
+      if (offlineNotifications.has(name)) {
+        offlineNotifications.delete(name);
+        return;
+      }
       bot.telegram.sendMessage(channelId, `${name} is online`);
-    } else {
-      bot.telegram.sendMessage(channelId, `🛑 ${name} is offline 🛑`);
+      return;
     }
+
+    offlineNotifications.add([name, new Date()]);
   }
 
   if (topic.startsWith('tasmota/discovery/') && topic.endsWith('/config')) {
