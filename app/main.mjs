@@ -76,7 +76,7 @@ client.on('message', (topic, message) => {
       return;
     }
 
-    offlineNotifications.add([name, new Date()]);
+    offlineNotifications.set(name, new Date());
   }
 
   if (topic.startsWith('tasmota/discovery/') && topic.endsWith('/config')) {
