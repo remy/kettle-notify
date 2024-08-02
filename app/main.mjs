@@ -7,6 +7,7 @@ const channelId = process.env.BOT_CHANNEL_ID;
 const botTopic = 'state/bot';
 const devices = new Map();
 
+/** @type Map */
 const offlineNotifications = new Map();
 
 // every minute check if the offlineNotifications has any entries
@@ -14,14 +15,15 @@ const offlineNotifications = new Map();
 // if it is, then send a message to the channel
 setInterval(() => {
   const now = new Date();
-  offlineNotifications.forEach(([name, date]) => {
+
+  for (const [name, date] of offlineNotifications) {
     const diff = now - date;
     if (diff > 300000) {
       bot.telegram.sendMessage(channelId, `🛑 ${name} is offline 🛑`);
       // and remove the entry
       offlineNotifications.delete(name);
     }
-  });
+  }
 }, 60000);
 
 let client = mqtt.connect(`mqtt://${process.env.MQTT_HOST}`, {
